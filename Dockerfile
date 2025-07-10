@@ -1,8 +1,23 @@
 # Use an existing base image, e.g., Ubuntu
 FROM ubuntu:20.04
 
-# Install required tools
-RUN apt-get update && apt-get install curl -y
+# Install prerequisites
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+
+# Add Docker’s official GPG key
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+# Add Docker repository
+RUN add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+
+# Install Docker Engine and CLI
+RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # Copy your daemon script & library into the container
 COPY cacert.pem /cacert.pem
